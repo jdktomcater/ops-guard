@@ -1,0 +1,43 @@
+x-app: &app
+  build: .
+  environment:
+    DATABASE_URL: postgresql+psycopg://ops:ops-local-only@db:5432/ops_guard
+    API_TOKEN: ${API_TOKEN:-local-demo-token}
+    LLM_MODE: ${LLM_MODE:-mock}
+    LLM_MODEL: ${LLM_MODEL:-gpt-4.1-mini}
+    LLM_API_KEY: ${LLM_API_KEY:-}
+    LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+  restart: unless-stopped
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ops
+      POSTGRES_PASSWORD: ops-local-only
+      POSTGRES_DB: ops_guard
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ops -d ops_guard"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  api:
+    <<: *app
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  worker:
+    <<: *app
+    command: ["python", "-m", "app.worker"]
+    depends_on:
+      api:
+        condition: service_healthy
+volumes:
+  postgres_data:

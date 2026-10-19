@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ops Guard · 运维安全</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><header><span class="logo">◈ OPS GUARD</span><span>运维安全分析平台 · MVP</span><span id="mode">连接中</span></header><main>
+<section class="heading"><div><p>SECURITY OPERATIONS</p><h1>让每一次操作，都有迹可循。</h1><p>操作记录 → 规则检测 → LangGraph 分析 → 告警处置</p></div></section>
+<section class="toolbar"><label>访问令牌 <input id="token" type="password" value="local-demo-token" autocomplete="off"></label><button id="connect">连接 / 刷新</button><button id="demo">导入演示日志</button><span id="message" role="status"></span></section>
+<section class="stats"><article><small>近期操作</small><strong id="eventCount">—</strong></article><article><small>待处置告警</small><strong id="alertCount">—</strong></article><article><small>分析完成</small><strong id="doneCount">—</strong></article><article><small>分析失败</small><strong id="failCount">—</strong></article></section>
+<section class="panel"><h2>告警中心</h2><p>点击告警查看证据与分析；自动每 3 秒刷新。</p><div id="alerts" class="cards"></div></section>
+<section class="panel"><h2>操作时间线</h2><div class="scroll"><table><thead><tr><th>ID / 时间</th><th>人员 / 资产</th><th>命令</th><th>结果</th></tr></thead><tbody id="events"></tbody></table></div></section>
+<section class="panel"><h2>事件上报</h2><p>仅上报与分析文本，演示中的命令不会执行。</p><textarea id="payload" rows="9" spellcheck="false"></textarea><button id="submit">提交 JSON 日志</button></section>
+<dialog id="detail"><button id="close">关闭</button><h2>告警详情</h2><pre id="detailText"></pre><label>处置结果 <select id="status"><option value="acknowledged">确认接手</option><option value="confirmed">确认风险</option><option value="false_positive">误报</option><option value="closed">关闭</option></select></label><input id="comment" placeholder="填写核查结论"><button id="feedback">保存反馈</button></dialog>
+<footer>本地演示版本 · Mock 模式为确定性模拟分析，不代表真实大模型判断。</footer></main><script src="/static/app.js"></script></body></html>
